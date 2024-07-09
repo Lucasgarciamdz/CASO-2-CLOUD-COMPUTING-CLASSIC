@@ -1,0 +1,20 @@
+#cloud-config
+write_files:
+  - path: /tmp/google-mobility.sql
+    encoding: b64
+    content: ${sql_content_base64}
+  - path: /tmp/import_sql.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      mysql -u root ${db_name} < /tmp/google-mobility.sql
+      rm /tmp/google-mobility.sql
+
+runcmd:
+  - sed -i '/bind-address/s/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+  - systemctl restart mysql
+  - mysql -e "CREATE DATABASE IF NOT EXISTS ${db_name};"
+  - mysql -e "GRANT ALL PRIVILEGES ON ${db_name}.* TO '${db_user}'@'%' IDENTIFIED BY '${db_password}';"
+  - mysql -e "FLUSH PRIVILEGES;"
+  - /tmp/import_sql.sh
+  - rm /tmp/import_sql.sh

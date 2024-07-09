@@ -7,8 +7,10 @@ resource "openstack_compute_instance_v2" "metabase_load_balancer" {
   availability_zone = "nodos-amd-2022"
 
   user_data = templatefile("${path.module}/load_balancer_init.sh", {
-    app_ip = openstack_compute_instance_v2.metabase_app.network.0.fixed_ip_v4
-  })
+      http_port = 80
+      app_ip    = openstack_compute_instance_v2.metabase_app.network.0.fixed_ip_v4
+      app_port  = 3000
+    })
 
   network {
     name = openstack_networking_network_v2.metabase_net.name

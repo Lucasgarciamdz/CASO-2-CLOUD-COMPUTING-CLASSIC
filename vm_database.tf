@@ -13,8 +13,10 @@ resource "openstack_compute_instance_v2" "metabase_db" {
   availability_zone = "nodos-amd-2022"
 
   user_data = templatefile("${path.module}/db_init.sh", {
-    google_mobility_sql = file("${path.module}/google-mobility.sql"),
-    GOOGLE_DB_PASSWORD  = var.google_db_password,
+    db_name      = "google"
+    db_user      = "googleuser"
+    db_password  = var.google_db_password
+    sql_file_url = "https://drive.google.com/uc?export=download&id=1AC2uvs6f2t4qrhXpz5XowSxoVXR3TfvG"
   })
 
   network {
@@ -24,3 +26,4 @@ resource "openstack_compute_instance_v2" "metabase_db" {
     openstack_networking_subnet_v2.metabase_subnet,
   ]
 }
+
