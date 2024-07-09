@@ -20,3 +20,4 @@ resource "openstack_compute_secgroup_v2" "metabase_sg_db" {
     to_port       = 3306
     ip_protocol   = "tcp"
   }
+}
