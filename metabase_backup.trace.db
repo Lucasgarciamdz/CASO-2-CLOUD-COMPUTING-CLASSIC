@@ -1,0 +1,6 @@
+2024-07-09 16:17:29 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "DATABASECHANGELOGLOCK" not found; SQL statement:
+SELECT COUNT(*) FROM "PUBLIC"."DATABASECHANGELOGLOCK" [42102-214]
+2024-07-09 16:45:06 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NAME CHARACTER VARYING(254)": "U&'Mobility, Average of Retail And Recreation Percent Change From Baseline, Aver... (485)"; SQL statement:
+INSERT INTO "REPORT_CARD" ("DESCRIPTION", "COLLECTION_POSITION", "TABLE_ID", "RESULT_METADATA", "DATABASE_ID", "COLLECTION_ID", "QUERY_TYPE", "NAME", "TYPE", "CREATOR_ID", "UPDATED_AT", "CACHE_TTL", "DATASET_QUERY", "PARAMETER_MAPPINGS", "DISPLAY", "ENTITY_ID", "VISUALIZATION_SETTINGS", "METABASE_VERSION", "PARAMETERS", "CREATED_AT") VALUES (NULL, NULL, ?, ?, ?, NULL, ?, ?, ?, ?, NOW(), NULL, ?, ?, ?, ?, ?, ?, ?, NOW()) [22001-214]
