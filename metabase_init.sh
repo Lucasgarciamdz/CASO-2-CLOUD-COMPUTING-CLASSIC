@@ -22,7 +22,14 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run Metabase Docker container
-docker run -d -p 3000:3000 --name metabase metabase/metabase >> /var/log/metabase_init.log 2>&1
+docker run -d -p 3000:3000 --name metabase \
+  -e "MB_DB_TYPE=mysql" \
+  -e "MB_DB_DBNAME=${db_name}" \
+  -e "MB_DB_PORT=3306" \
+  -e "MB_DB_USER=${db_user}" \
+  -e "MB_DB_PASS=${db_password}" \
+  -e "MB_DB_HOST=<DB_INSTANCE_IP>" \
+  metabase/metabase >> /var/log/metabase_init.log 2>&1
 if [ $? -eq 0 ]; then
   echo "Metabase started successfully" >> /var/log/metabase_init.log
 else
