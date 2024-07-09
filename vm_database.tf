@@ -1,5 +1,7 @@
-data "external" "env_vars" {
-  program = ["bash", "${path.module}/read_env_vars.sh"]
+variable "google_db_password" {
+  description = "Password for the Google DB"
+  type        = string
+  sensitive   = true
 }
 
 resource "openstack_compute_instance_v2" "metabase_db" {
@@ -12,7 +14,7 @@ resource "openstack_compute_instance_v2" "metabase_db" {
 
   user_data = templatefile("${path.module}/db_init.sh", {
     google_mobility_sql = file("${path.module}/google-mobility.sql"),
-    GOOGLE_DB_PASSWORD  = data.external.env_vars.result["GOOGLE_DB_PASSWORD"]
+    GOOGLE_DB_PASSWORD  = var.google_db_password,
   })
 
   network {
