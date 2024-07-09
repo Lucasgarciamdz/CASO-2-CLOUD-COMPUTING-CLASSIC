@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while IFS= read -r line; do export line; done < ../.env
+while IFS= read -r line; do export $line; done < ./.env
 
 sudo sed -i '/bind-address/s/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo systemctl restart mysql

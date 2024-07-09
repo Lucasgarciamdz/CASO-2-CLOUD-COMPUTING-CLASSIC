@@ -1,6 +1,6 @@
 resource "openstack_compute_instance_v2" "metabase_load_balancer" {
   name              = "metabase-load-balancer"
-  image_id          = data.openstack_images_image_v2.srv_nginx_ubuntu1804.id
+  image_id          = data.openstack_images_image_v2.srv-nginx-ubuntu1804.id
   flavor_id         = data.openstack_compute_flavor_v2.small.id
   key_pair          = var.key_name
   security_groups   = [openstack_compute_secgroup_v2.metabase_sg_load_balancer.name]

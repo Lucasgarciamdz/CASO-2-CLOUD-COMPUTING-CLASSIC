@@ -12,12 +12,12 @@ data "openstack_images_image_v2" "ubuntu_2204" {
   most_recent = true
 }
 
-data "openstack_images_image_v2" "srv_mysql_ubuntu1804" {
+data "openstack_images_image_v2" "srv-mysql-ubuntu1804" {
   name        = "srv-mysql-ubuntu1804"
   most_recent = true
 }
 
-data "openstack_images_image_v2" "srv_nginx_ubuntu1804" {
+data "openstack_images_image_v2" "srv-nginx-ubuntu1804" {
   name        = "srv-nginx-ubuntu1804"
   most_recent = true
 }
