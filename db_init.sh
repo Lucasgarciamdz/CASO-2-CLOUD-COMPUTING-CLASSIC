@@ -19,15 +19,6 @@ fi
 
 sudo mysql -e "FLUSH PRIVILEGES;"
 
-# Create the database and grant privileges
-if ! sudo mysql -e "CREATE DATABASE IF NOT EXISTS ${db_name};" || \
-   ! sudo mysql -e "GRANT ALL PRIVILEGES ON ${db_name}.* TO '${db_user}'@'%' IDENTIFIED BY '${db_password}';"; then
-    echo "Failed to create database or grant privileges" >> $LOG_FILE
-    exit 1
-fi
-
-sudo mysql -e "FLUSH PRIVILEGES;"
-
 # Download the SQL file
 echo "Downloading SQL file..." >> $LOG_FILE
 if ! wget --no-check-certificate -O /tmp/google-mobility.sql "${sql_file_url}"; then

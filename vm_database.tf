@@ -1,9 +1,3 @@
-variable "google_db_password" {
-  description = "Password for the Google DB"
-  type        = string
-  sensitive   = true
-}
-
 resource "openstack_compute_instance_v2" "metabase_db" {
   name              = "metabase-db"
   image_id          = data.openstack_images_image_v2.srv-mysql-ubuntu1804.id
@@ -13,8 +7,8 @@ resource "openstack_compute_instance_v2" "metabase_db" {
   availability_zone = "nodos-amd-2022"
 
   user_data = templatefile("${path.module}/db_init.sh", {
-    db_name      = "google"
-    db_user      = "googleuser"
+    db_name      = var.google_db_name
+    db_user      = var.google_db_user
     db_password  = var.google_db_password
     sql_file_url = "https://drive.google.com/uc?export=download&id=1AC2uvs6f2t4qrhXpz5XowSxoVXR3TfvG"
   })

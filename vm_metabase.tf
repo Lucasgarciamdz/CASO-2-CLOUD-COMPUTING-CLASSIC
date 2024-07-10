@@ -10,7 +10,13 @@ resource "openstack_compute_instance_v2" "metabase_app" {
     name = openstack_networking_network_v2.metabase_net.name
   }
 
-  user_data = file("${path.module}/metabase_init.sh")
+  user_data = templatefile("${path.module}/metabase_init.sh", {
+    db_name      = var.google_db_name
+    db_user      = var.google_db_user
+    db_password  = var.google_db_password
+    db_host      = openstack_compute_instance_v2.metabase_db.network.0.fixed_ip_v4
+    metabase_password = var.metabase_password
+  })
 
   depends_on = [
     openstack_networking_subnet_v2.metabase_subnet,
