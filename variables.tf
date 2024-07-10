@@ -26,3 +26,8 @@ variable "metabase_password" {
   type        = string
   sensitive   = true
 }
+variable "metabase_mail" {
+  description = "Mail for the Metabase user"
+  type        = string
+  sensitive   = true
+}
