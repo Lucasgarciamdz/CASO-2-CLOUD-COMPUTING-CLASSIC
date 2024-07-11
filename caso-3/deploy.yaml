@@ -29,11 +29,11 @@ spec:
         env:
         - name: MB_DB_TYPE
           value: mysql
-        - name: MB_DB_DBNAME
+        - name: MB_DB_NAME
           valueFrom:
             configMapKeyRef:
               name: metabase-config
-              key: MB_DB_DBNAME
+              key: MB_DB_NAME
         - name: MB_DB_USER
           valueFrom:
             secretKeyRef:
@@ -74,7 +74,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: metabase-config
-              key: MYSQL_DATABASE
+              key: MB_DB_NAME
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:

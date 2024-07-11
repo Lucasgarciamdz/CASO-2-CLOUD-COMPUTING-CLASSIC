@@ -4,9 +4,8 @@ metadata:
   name: metabase-config
   namespace: metabase
 data:
-  MB_DB_DBNAME: "metabaseDB"
+  MB_DB_NAME: "metabaseDB"
   MB_DB_HOST: "metabase.mysql"
-  MYSQL_DATABASE: "metabaseDB"
 
 ---
 
@@ -19,7 +18,7 @@ data:
   init-db.sh: |
     #!/bin/bash
     set -e
-    
+
     mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD <<EOF
     CREATE DATABASE IF NOT EXISTS mobility;
     EOF
