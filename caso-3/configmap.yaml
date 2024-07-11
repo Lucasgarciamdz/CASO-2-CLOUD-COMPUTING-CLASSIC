@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metabase-config
+  namespace: metabase
+data:
+  MB_DB_DBNAME: "metabaseDB"
+  MB_DB_HOST: "metabase.mysql"
+  MYSQL_DATABASE: "metabaseDB"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-script
+  namespace: metabase
+data:
+  init-db.sh: |
+    #!/bin/bash
+    set -e
+    
+    mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+    CREATE DATABASE IF NOT EXISTS mobility;
+    EOF
