@@ -4,11 +4,10 @@ metadata:
   name: metabase-config
   namespace: metabase
 data:
-  MB_DB_NAME: "metabaseDB"
-  MB_DB_HOST: "metabase.mysql"
+  MB_DB_NAME: 'metabaseDB'
+  MB_DB_HOST: 'mysql'
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:

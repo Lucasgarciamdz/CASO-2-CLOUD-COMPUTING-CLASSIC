@@ -62,6 +62,7 @@ echo "${ingress_yaml}" > "/home/ubuntu/kube_yamls/ingress.yaml"
 echo "${network_yaml}" > "/home/ubuntu/kube_yamls/network.yaml"
 echo "${pvc_yaml}" > "/home/ubuntu/kube_yamls/pvc.yaml"
 echo "${secret_yaml}" > "/home/ubuntu/kube_yamls/secrets.yaml"
+echo "${service_yaml}" > "/home/ubuntu/kube_yamls/services.yaml"
 
 # Update secrets in YAML file
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Updating secrets in YAML file" | tee -a "$LOG_FILE"
@@ -81,27 +82,39 @@ export KUBECONFIG=~/.kube/config
 log_and_run "kubectl -n metabase apply -f /home/ubuntu/kube_yamls/"
 
 
-# # Wait for MySQL pod to be ready
-# echo "$(date '+%Y-%m-%d %H:%M:%S') - Waiting for MySQL pod to be ready" | tee -a "$LOG_FILE"
-# log_and_run "kubectl wait --for=condition=ready pod -l app=mysql -n metabase --timeout=300s"
+# Wait for MySQL pod to be ready
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Waiting for MySQL pod to be ready" | tee -a "$LOG_FILE"
+log_and_run "kubectl wait --for=condition=ready pod -l app=mysql -n metabase --timeout=300s"
 
-# # Download SQL file
-# echo "$(date '+%Y-%m-%d %H:%M:%S') - Downloading SQL file" | tee -a "$LOG_FILE"
-# log_and_run "wget --no-check-certificate -O /tmp/google-mobility.sql '${sql_file_url}'"
+# Download SQL file
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Downloading SQL file" | tee -a "$LOG_FILE"
+log_and_run "wget --no-check-certificate -O /tmp/google-mobility.sql '${sql_file_url}'"
 
-# # Get MySQL pod name
-# MYSQL_POD=$(kubectl get pods -l app=mysql -n metabase -o jsonpath="{.items[0].metadata.name}")
+# Get MySQL pod name
+MYSQL_POD=$(kubectl get pods -l app=mysql -n metabase -o jsonpath="{.items[0].metadata.name}")
 
-# # Copy SQL file to MySQL pod
-# echo "$(date '+%Y-%m-%d %H:%M:%S') - Copying SQL file to MySQL pod" | tee -a "$LOG_FILE"
-# log_and_run "kubectl cp /tmp/google-mobility.sql metabase/$MYSQL_POD:/tmp/google-mobility.sql"
 
-# # Execute SQL script
-# echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
-# log_and_run "kubectl exec -i '$MYSQL_POD' -n metabase -- mysql -u root -p'${METABASE_DB_PASSWORD}' <<EOF
-# CREATE DATABASE IF NOT EXISTS mobility;
-# USE mobility;
-# source /tmp/google-mobility.sql;
-# EOF"
+# Copy SQL file to MySQL pod
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Copying SQL file to MySQL pod" | tee -a "$LOG_FILE"
+log_and_run "kubectl cp /tmp/google-mobility.sql metabase/$MYSQL_POD:/tmp/google-mobility.sql"
+
+# Execute SQL script
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
+log_and_run "kubectl exec -i '$MYSQL_POD' -n metabase -- mysql -u root -p'${MYSQL_ROOT_PASSWORD}' <<EOF
+CREATE DATABASE IF NOT EXISTS mobility;
+CREATE DATABASE IF NOT EXISTS metabaseDB;
+CREATE USER IF NOT EXISTS '${METABASE_DB_USER}'@'%' IDENTIFIED WITH mysql_native_password BY '${METABASE_DB_PASSWORD}';
+CREATE USER IF NOT EXISTS '${MOBILITY_DB_USER}'@'%' IDENTIFIED WITH mysql_native_password BY '${MOBILITY_DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON metabaseDB.* TO '${METABASE_DB_USER}'@'%';
+GRANT ALL PRIVILEGES ON mobility.* TO '${MOBILITY_DB_USER}'@'%';
+FLUSH PRIVILEGES;
+USE mobility;
+source /tmp/google-mobility.sql;
+EOF"
+
+
+
+
+
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Setup completed successfully!" | tee -a "$LOG_FILE"

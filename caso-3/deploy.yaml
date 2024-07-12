@@ -20,7 +20,7 @@ spec:
             [
               'sh',
               '-c',
-              'while ! nc -z mysql.metabase.svc.cluster.local 3306; do sleep 1; done',
+              'while ! nc -z mysql 3306; do echo waiting for mysql; sleep 2; done;',
             ]
       containers:
         - name: metabase
@@ -34,7 +34,7 @@ spec:
           env:
             - name: MB_DB_TYPE
               value: mysql
-            - name: MB_DB_NAME
+            - name: MB_DB_DBNAME
               valueFrom:
                 configMapKeyRef:
                   name: metabase-config
@@ -43,14 +43,14 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: metabase-secrets
-                  key: MB_DB_USER
+                  key: METABASE_DB_USER
             - name: MB_DB_PASS
               valueFrom:
                 secretKeyRef:
                   name: metabase-secrets
-                  key: MB_DB_PASS
+                  key: METABASE_DB_PASSWORD
             - name: MB_DB_HOST
-              value: mysql.metabase.svc.cluster.local
+              value: mysql
           ports:
             - containerPort: 3000
 
@@ -100,6 +100,8 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
+          args:
+            - --mysql-native-password=ON
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
