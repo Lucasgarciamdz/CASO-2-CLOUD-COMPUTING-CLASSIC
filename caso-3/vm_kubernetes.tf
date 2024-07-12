@@ -50,6 +50,18 @@ variable "rancher_token" {
   sensitive   = true
 }
 
+variable "mysql_root_password" {
+  description = "Password for the MySQL root user"
+  type        = string
+  sensitive   = true
+}
+
+variable "mysql_user" {
+  description = "User for the MySQL DB"
+  type        = string
+  default     = "mobility"
+}
+
 
 resource "openstack_compute_instance_v2" "docker_vm" {
   name              = "kube_vm"
@@ -75,6 +87,8 @@ resource "openstack_compute_instance_v2" "docker_vm" {
     METABASE_DB_PASSWORD = var.metabase_db_password,
     MOBILITY_DB_USER = var.mobility_db_user,
     MOBILITY_DB_PASSWORD = var.mobility_db_password,
+    MYSQL_ROOT_PASSWORD = var.mysql_root_password,
+    MYSQL_USER = var.mysql_user,
     sql_file_url = "https://drive.google.com/uc?export=download&id=1AC2uvs6f2t4qrhXpz5XowSxoVXR3TfvG"
   }
     )

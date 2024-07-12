@@ -47,7 +47,9 @@ encoded_metabase_password=$(echo -n "${METABASE_PASSWORD}" | base64 -w 0)
 encoded_metabase_db_user=$(echo -n "${METABASE_DB_USER}" | base64 -w 0)
 encoded_metabase_db_password=$(echo -n "${METABASE_DB_PASSWORD}" | base64 -w 0)
 encoded_mobility_db_user=$(echo -n "${MOBILITY_DB_USER}" | base64 -w 0)
-encoded_mobility_db_password=$(echo -n "${MOBILITY_DB_PASSWORD}" | base64 -w 0)
+encoded_mobility_db_password=$(echo -n "${MYSQL_ROOT_PASSWORD}" | base64 -w 0)
+encoded_mysql_root_password=$(echo -n "${MYSQL_ROOT_PASSWORD}" | base64 -w 0)
+encoded_mysql_user=$(echo -n "${MYSQL_USER}" | base64 -w 0)
 
 # Create directory for Kubernetes YAML files
 log_and_run "mkdir -p /home/ubuntu/kube_yamls"
@@ -69,6 +71,8 @@ sed -i "s|METABASE_DB_USER:.*|METABASE_DB_USER: $encoded_metabase_db_user|" /hom
 sed -i "s|METABASE_DB_PASSWORD:.*|METABASE_DB_PASSWORD: $encoded_metabase_db_password|" /home/ubuntu/kube_yamls/secrets.yaml
 sed -i "s|MOBILITY_DB_USER:.*|MOBILITY_DB_USER: $encoded_mobility_db_user|" /home/ubuntu/kube_yamls/secrets.yaml
 sed -i "s|MOBILITY_DB_PASSWORD:.*|MOBILITY_DB_PASSWORD: $encoded_mobility_db_password|" /home/ubuntu/kube_yamls/secrets.yaml
+sed -i "s|MYSQL_ROOT_PASSWORD:.*|MYSQL_ROOT_PASSWORD: $encoded_mysql_root_password|" /home/ubuntu/kube_yamls/secrets.yaml
+sed -i "s|MYSQL_USER:.*|MYSQL_USER: $encoded_mysql_user|" /home/ubuntu/kube_yamls/secrets.yaml
 
 # Apply Kubernetes configurations
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Applying Kubernetes configurations" | tee -a "$LOG_FILE"

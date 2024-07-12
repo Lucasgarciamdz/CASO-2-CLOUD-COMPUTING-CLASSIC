@@ -20,7 +20,7 @@ spec:
             [
               'sh',
               '-c',
-              'until nc -z mysql 3306; do echo waiting for mysql; sleep 2; done;',
+              'while ! nc -z mysql.metabase.svc.cluster.local 3306; do sleep 1; done',
             ]
       containers:
         - name: metabase
@@ -50,7 +50,7 @@ spec:
                   name: metabase-secrets
                   key: MB_DB_PASS
             - name: MB_DB_HOST
-              value: mysql
+              value: mysql.metabase.svc.cluster.local
           ports:
             - containerPort: 3000
 
@@ -104,3 +104,4 @@ spec:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
+      terminationGracePeriodSeconds: 30
