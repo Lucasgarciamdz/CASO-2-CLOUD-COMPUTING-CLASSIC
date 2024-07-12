@@ -12,6 +12,22 @@ log_and_run() {
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting init.sh" | tee -a "$LOG_FILE"
 
+
+
+# Set up Rancher context
+log_and_run "rancher login --context 'c-6bdnb:p-svfjj' --token '${rancher_token}' https://rancher.kube.um.edu.ar/v3"
+log_and_run "rancher context current"
+log_and_run "rancher project ls | grep -q LucasGarcia-project || rancher project create LucasGarcia-project"
+log_and_run "rancher context switch LucasGarcia-project"
+log_and_run "rancher kubectl config view --raw=true | install -D -m 640 /dev/stdin ~/.kube/config"
+
+# Create namespace
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Creating namespace" | tee -a "$LOG_FILE"
+log_and_run "rancher namespace create metabase"
+
+log_and_run "kubectl config set-context cluster-01 --namespace=metabase"
+
+
 # Agregar comandos de Rancher a .bashrc
 echo "Añadiendo comandos de Rancher a .bashrc" | tee -a $LOG_FILE
 {
@@ -20,17 +36,9 @@ echo "Añadiendo comandos de Rancher a .bashrc" | tee -a $LOG_FILE
   echo "rancher project ls | grep -q LucasGarcia-project || rancher project create LucasGarcia-project"
   echo "rancher context switch LucasGarcia-project"
   echo "rancher kubectl config view --raw=true | install -D -m 640 /dev/stdin ~/.kube/config"
-  echo "kubectl config set-context --current --namespace=metabase"
+  echo "rancher namespace create metabase"
+  echo "kubectl config set-context cluster-01 --namespace=metabase"
 } >> /home/ubuntu/.bashrc
-
-# Set up Rancher context
-log_and_run "rancher login --context 'c-6bdnb:p-svfjj' --token '${rancher_token}' https://rancher.kube.um.edu.ar/v3"
-log_and_run "rancher context switch LucasGarcia-project"
-log_and_run "rancher kubectl config view --raw=true | install -D -m 640 /dev/stdin ~/.kube/config"
-
-# Create namespace
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Creating namespace" | tee -a "$LOG_FILE"
-log_and_run "rancher namespace create metabase"
 
 # Base64 encode secrets
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Encoding secrets" | tee -a "$LOG_FILE"
@@ -64,29 +72,32 @@ sed -i "s|MOBILITY_DB_PASSWORD:.*|MOBILITY_DB_PASSWORD: $encoded_mobility_db_pas
 
 # Apply Kubernetes configurations
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Applying Kubernetes configurations" | tee -a "$LOG_FILE"
-log_and_run "kubectl apply -f /home/ubuntu/kube_yamls/"
+sleep 5
+export KUBECONFIG=~/.kube/config
+log_and_run "kubectl -n metabase apply -f /home/ubuntu/kube_yamls/"
 
-# Wait for MySQL pod to be ready
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Waiting for MySQL pod to be ready" | tee -a "$LOG_FILE"
-log_and_run "kubectl wait --for=condition=ready pod -l app=mysql -n metabase --timeout=300s"
 
-# Download SQL file
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Downloading SQL file" | tee -a "$LOG_FILE"
-log_and_run "wget --no-check-certificate -O /tmp/google-mobility.sql '${sql_file_url}'"
+# # Wait for MySQL pod to be ready
+# echo "$(date '+%Y-%m-%d %H:%M:%S') - Waiting for MySQL pod to be ready" | tee -a "$LOG_FILE"
+# log_and_run "kubectl wait --for=condition=ready pod -l app=mysql -n metabase --timeout=300s"
 
-# Get MySQL pod name
-MYSQL_POD=$(kubectl get pods -l app=mysql -n metabase -o jsonpath="{.items[0].metadata.name}")
+# # Download SQL file
+# echo "$(date '+%Y-%m-%d %H:%M:%S') - Downloading SQL file" | tee -a "$LOG_FILE"
+# log_and_run "wget --no-check-certificate -O /tmp/google-mobility.sql '${sql_file_url}'"
 
-# Copy SQL file to MySQL pod
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Copying SQL file to MySQL pod" | tee -a "$LOG_FILE"
-log_and_run "kubectl cp /tmp/google-mobility.sql metabase/$MYSQL_POD:/tmp/google-mobility.sql"
+# # Get MySQL pod name
+# MYSQL_POD=$(kubectl get pods -l app=mysql -n metabase -o jsonpath="{.items[0].metadata.name}")
 
-# Execute SQL script
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
-log_and_run "kubectl exec -i '$MYSQL_POD' -n metabase -- mysql -u root -p'${METABASE_DB_PASSWORD}' <<EOF
-CREATE DATABASE IF NOT EXISTS mobility;
-USE mobility;
-source /tmp/google-mobility.sql;
-EOF"
+# # Copy SQL file to MySQL pod
+# echo "$(date '+%Y-%m-%d %H:%M:%S') - Copying SQL file to MySQL pod" | tee -a "$LOG_FILE"
+# log_and_run "kubectl cp /tmp/google-mobility.sql metabase/$MYSQL_POD:/tmp/google-mobility.sql"
+
+# # Execute SQL script
+# echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
+# log_and_run "kubectl exec -i '$MYSQL_POD' -n metabase -- mysql -u root -p'${METABASE_DB_PASSWORD}' <<EOF
+# CREATE DATABASE IF NOT EXISTS mobility;
+# USE mobility;
+# source /tmp/google-mobility.sql;
+# EOF"
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Setup completed successfully!" | tee -a "$LOG_FILE"
