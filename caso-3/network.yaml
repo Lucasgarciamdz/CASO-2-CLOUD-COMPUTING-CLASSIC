@@ -3,7 +3,7 @@
 # kind: NetworkPolicy
 # metadata:
 #   name: ingress-nginx-policy
-#   namespace: metabase
+#   namespace: lucas-garcia-metabase
 # spec:
 #   podSelector:
 #     matchLabels:
@@ -27,7 +27,7 @@
 # kind: NetworkPolicy
 # metadata:
 #   name: metabase-app-policy
-#   namespace: metabase
+#   namespace: lucas-garcia-metabase
 # spec:
 #   podSelector:
 #     matchLabels:
@@ -64,7 +64,7 @@
 # kind: NetworkPolicy
 # metadata:
 #   name: mysql-policy
-#   namespace: metabase
+#   namespace: lucas-garcia-metabase
 # spec:
 #   podSelector:
 #     matchLabels:
@@ -85,7 +85,7 @@
 # kind: NetworkPolicy
 # metadata:
 #   name: metabase-app-policy
-#   namespace: metabase
+#   namespace: lucas-garcia-metabase
 # spec:
 #   podSelector:
 #     matchLabels:

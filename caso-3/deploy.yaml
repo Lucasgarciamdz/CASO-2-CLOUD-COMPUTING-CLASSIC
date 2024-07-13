@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metabase
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 spec:
   replicas: 1
   selector:
@@ -30,7 +30,7 @@ spec:
               path: /api/health
               port: 3000
             initialDelaySeconds: 90
-            periodSeconds: 10
+            periodSeconds: 180
           env:
             - name: MB_DB_TYPE
               value: mysql
@@ -59,7 +59,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 spec:
   replicas: 1
   selector:

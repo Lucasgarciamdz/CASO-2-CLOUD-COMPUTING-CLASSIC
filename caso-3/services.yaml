@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 spec:
   selector:
     app: mysql
@@ -16,7 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: metabase
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 spec:
   selector:
     app: metabase

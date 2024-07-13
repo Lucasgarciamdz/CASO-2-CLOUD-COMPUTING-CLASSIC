@@ -23,7 +23,7 @@ variable "metabase_password" {
 variable "metabase_db_user" {
   description = "User for the Metabase DB"
   type        = string
-  default     = "metabase"
+  default     = "metabaseUser"
 }
 
 variable "metabase_db_password" {
@@ -35,7 +35,7 @@ variable "metabase_db_password" {
 variable "mobility_db_user" {
   description = "User for the Mobilitec DB"
   type        = string
-  default     = "mobility"
+  default     = "mobilityUser"
 }
 
 variable "mobility_db_password" {
@@ -59,7 +59,7 @@ variable "mysql_root_password" {
 variable "mysql_user" {
   description = "User for the MySQL DB"
   type        = string
-  default     = "mobility"
+  default     = "mysqlUser"
 }
 
 
@@ -81,6 +81,9 @@ resource "openstack_compute_instance_v2" "docker_vm" {
     secret_yaml = file("${path.module}/secrets.yaml"),
     service_yaml = file("${path.module}/services.yaml"),
     rancher_token = var.rancher_token,
+    namespace = "lucas-garcia-metabase",
+    mobility_db_name = "mobility",
+    metabase_db_name = "metabaseDB",
     METABASE_MAIL = var.metabase_mail,
     METABASE_PASSWORD = var.metabase_password,
     METABASE_DB_USER = var.metabase_db_user,

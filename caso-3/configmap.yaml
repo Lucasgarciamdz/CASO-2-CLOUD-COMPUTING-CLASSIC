@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: metabase-config
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 data:
   MB_DB_NAME: 'metabaseDB'
   MB_DB_HOST: 'mysql'
@@ -12,7 +12,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: db-init-script
-  namespace: metabase
+  namespace: lucas-garcia-metabase
 data:
   init-db.sh: |
     #!/bin/bash
