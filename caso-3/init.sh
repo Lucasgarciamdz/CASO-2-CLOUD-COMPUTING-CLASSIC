@@ -15,8 +15,8 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting init.sh" | tee -a "$LOG_FILE"
 # Set up Rancher context
 log_and_run "rancher login --context 'c-6bdnb:p-svfjj' --token '${rancher_token}' https://rancher.kube.um.edu.ar/v3"
 log_and_run "rancher context current"
-log_and_run "rancher project ls | grep -q LucasGarcia-project || rancher project create LucasGarcia-project"
-log_and_run "rancher context switch LucasGarcia-project"
+log_and_run "rancher project ls | grep -q '${project_name}'-project || rancher project create '${project_name}'-project"
+log_and_run "rancher context switch '${project_name}'-project"
 log_and_run "rancher kubectl config view --raw=true | install -D -m 640 /dev/stdin ~/.kube/config"
 
 # Create namespace
@@ -30,8 +30,8 @@ echo "Añadiendo comandos de Rancher a .bashrc" | tee -a $LOG_FILE
 {
   echo "rancher login --context 'c-6bdnb:p-svfjj' --token \${rancher_token} https://rancher.kube.um.edu.ar/v3"
   echo "rancher context current"
-  echo "rancher project ls | grep -q LucasGarcia-project || rancher project create LucasGarcia-project"
-  echo "rancher context switch LucasGarcia-project"
+  echo "rancher project ls | grep -q '${project_name}'-project || rancher project create '${project_name}'-project"
+  echo "rancher context switch '${project_name}'-project"
   echo "rancher kubectl config view --raw=true | install -D -m 640 /dev/stdin ~/.kube/config"
   echo "kubectl config set-context cluster-01 --namespace='${namespace}'"
 } >>/home/ubuntu/.bashrc

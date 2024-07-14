@@ -2,22 +2,22 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: metabase-config
-  namespace: lucas-garcia-metabase
+  namespace: ${NAMESPACE}
 data:
-  MB_DB_NAME: 'metabaseDB'
-  MB_DB_HOST: 'mysql'
+  MB_DB_NAME: '${METABASE_DB_NAME}'
+  MB_DB_HOST: '${METABASE_DB_HOST}'
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: db-init-script
-  namespace: lucas-garcia-metabase
+  namespace: ${NAMESPACE}
 data:
   init-db.sh: |
     #!/bin/bash
     set -e
 
     mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD <<EOF
-    CREATE DATABASE IF NOT EXISTS mobility;
+    CREATE DATABASE IF NOT EXISTS ${MOBILITY_DB_NAME};
     EOF

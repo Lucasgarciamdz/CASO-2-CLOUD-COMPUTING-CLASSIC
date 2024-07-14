@@ -1,0 +1,60 @@
+# Configuración de Metabase
+# Correo electrónico del administrador de Metabase (debe ser una dirección de correo válida)
+TF_VAR_metabase_mail=
+
+# Contraseña del administrador de Metabase (mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números)
+TF_VAR_metabase_password=
+
+# Nombre de usuario para la base de datos de Metabase (solo letras minúsculas y números, sin espacios)
+TF_VAR_metabase_db_user=
+
+# Contraseña para la base de datos de Metabase (mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números)
+TF_VAR_metabase_db_password=
+
+# Configuración de la base de datos de movilidad
+# Nombre de usuario para la base de datos de movilidad (solo letras minúsculas y números, sin espacios)
+TF_VAR_mobility_db_user=
+
+# Contraseña para la base de datos de movilidad (mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números)
+TF_VAR_mobility_db_password=
+
+# Configuración de Rancher
+# Token de acceso para Rancher (cadena larga generada por Rancher)
+TF_VAR_rancher_token=
+
+# Configuración de MySQL
+# Contraseña de root para MySQL (mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números)
+TF_VAR_mysql_root_password=
+
+# Nombre de usuario adicional para MySQL (solo letras minúsculas y números, sin espacios)
+TF_VAR_mysql_user=
+
+# Configuración de OpenStack
+# Nombre de la máquina virtual en OpenStack (solo letras minúsculas, números y guiones)
+TF_VAR_vm_name=
+
+# Nombre del par de claves en OpenStack para acceso SSH (debe existir en OpenStack)
+TF_VAR_key_pair_name=
+
+# Configuración de Kubernetes
+# Nombre del namespace en Kubernetes (debe seguir el patrón: [a-z0-9]([-a-z0-9]*[a-z0-9])?)
+TF_VAR_namespace=
+
+# Nombres de bases de datos
+# Nombre de la base de datos para Metabase (solo letras minúsculas y números, sin espacios)
+TF_VAR_metabase_db_name=
+
+# Nombre del proyecto en Rancher (solo letras, números y guiones)
+TF_VAR_project_name=
+
+# Nombre de la base de datos para los datos de movilidad (solo letras minúsculas y números, sin espacios)
+TF_VAR_mobility_db_name=
+
+# URL del archivo SQL con datos de movilidad de Google (debe ser una URL válida y accesible)
+TF_VAR_sql_file_url=
+
+# Nombre de la máquina virtual en OpenStack (solo letras minúsculas, números y guiones)
+TF_VAR_vm_name=
+
+# Nombre del par de claves en OpenStack para acceso SSH (debe existir en OpenStack)
+TF_VAR_key_pair_name=

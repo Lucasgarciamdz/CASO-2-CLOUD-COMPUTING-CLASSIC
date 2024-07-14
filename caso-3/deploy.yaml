@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metabase
-  namespace: lucas-garcia-metabase
+  namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
@@ -50,7 +50,10 @@ spec:
                   name: metabase-secrets
                   key: METABASE_DB_PASSWORD
             - name: MB_DB_HOST
-              value: mysql
+              valueFrom:
+                configMapKeyRef:
+                  name: metabase-config
+                  key: MB_DB_HOST
           ports:
             - containerPort: 3000
 
@@ -59,7 +62,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: lucas-garcia-metabase
+  namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:

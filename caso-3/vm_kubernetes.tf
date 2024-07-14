@@ -8,71 +8,21 @@ data "openstack_compute_flavor_v2" "small" {
   ram   = 2048
 }
 
-variable "metabase_mail" {
-  description = "Mail for the Metabase user"
-  type        = string
-  sensitive   = true
-}
-
-variable "metabase_password" {
-  description = "Password for the Metabase user"
-  type        = string
-  sensitive   = true
-}
-
-variable "metabase_db_user" {
-  description = "User for the Metabase DB"
-  type        = string
-  default     = "metabaseUser"
-}
-
-variable "metabase_db_password" {
-  description = "Password for the Metabase DB"
-  type        = string
-  sensitive   = true
-}
-
-variable "mobility_db_user" {
-  description = "User for the Mobilitec DB"
-  type        = string
-  default     = "mobilityUser"
-}
-
-variable "mobility_db_password" {
-  description = "Password for the Mobilitec DB"
-  type        = string
-  sensitive   = true
-}
-
-variable "rancher_token" {
-  description = "Bearer Token for Rancher"
-  type        = string
-  sensitive   = true
-}
-
-variable "mysql_root_password" {
-  description = "Password for the MySQL root user"
-  type        = string
-  sensitive   = true
-}
-
-variable "mysql_user" {
-  description = "User for the MySQL DB"
-  type        = string
-  default     = "mysqlUser"
-}
-
-
 resource "openstack_compute_instance_v2" "docker_vm" {
-  name              = "kube_vm"
+  name              = var.vm_name
   image_id          = data.openstack_images_image_v2.docker.id
   flavor_id         = data.openstack_compute_flavor_v2.small.id
-  key_pair          = "mac"
+  key_pair          = var.key_pair_name
   security_groups   = ["default"]
   availability_zone = "nodos-amd-2022"
 
   user_data = templatefile("init.sh", {
-    configmap_yaml = file("${path.module}/configmap.yaml"),
+    configmap_yaml = templatefile("${path.module}/configmap.yaml", {
+      NAMESPACE        = var.namespace
+      METABASE_DB_NAME = var.metabase_db_name
+      METABASE_DB_HOST = "mysql"
+      MOBILITY_DB_NAME = var.mobility_db_name
+    }),
     deploy_yaml = file("${path.module}/deploy.yaml"),
     ingress_yaml = file("${path.module}/ingress.yaml"),
     namespace_yaml = file("${path.module}/namespace.yaml"),
@@ -81,9 +31,10 @@ resource "openstack_compute_instance_v2" "docker_vm" {
     secret_yaml = file("${path.module}/secrets.yaml"),
     service_yaml = file("${path.module}/services.yaml"),
     rancher_token = var.rancher_token,
-    namespace = "lucas-garcia-metabase",
-    mobility_db_name = "mobility",
-    metabase_db_name = "metabaseDB",
+    namespace = var.namespace,
+    project_name = var.project_name,
+    mobility_db_name = var.mobility_db_name,
+    metabase_db_name = var.metabase_db_name,
     METABASE_MAIL = var.metabase_mail,
     METABASE_PASSWORD = var.metabase_password,
     METABASE_DB_USER = var.metabase_db_user,
@@ -92,9 +43,8 @@ resource "openstack_compute_instance_v2" "docker_vm" {
     MOBILITY_DB_PASSWORD = var.mobility_db_password,
     MYSQL_ROOT_PASSWORD = var.mysql_root_password,
     MYSQL_USER = var.mysql_user,
-    sql_file_url = "https://drive.google.com/uc?export=download&id=1AC2uvs6f2t4qrhXpz5XowSxoVXR3TfvG"
-  }
-    )
+    sql_file_url = var.sql_file_url
+  })
 
   network {
     name = "net_umstack"
