@@ -79,7 +79,12 @@ variable "key_pair_name" {
   type        = string
 }
 
-variable "vm_name" {
-  description = "Name of the VM"
+variable "vm_kube_name" {
+  description = "Name of the Kube VM"
+  type        = string
+}
+
+variable "vm_bastion_name" {
+  description = "Name of the Bastion VM"
   type        = string
 }

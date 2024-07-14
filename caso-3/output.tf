@@ -5,18 +5,6 @@ output "Detalle" {
 🚀 Infraestructura Metabase en Kubernetes
 ====================================
 
-🔐 Acceso de Administración:
-----------------------------
-VM Docker: ${openstack_compute_instance_v2.docker_vm.network.0.fixed_ip_v4}
-Usuario: ubuntu
-Comando SSH: ssh ubuntu@${openstack_compute_instance_v2.docker_vm.network.0.fixed_ip_v4}
-
-🌐 Acceso a la Aplicación:
---------------------------
-URL Metabase: https://lucasg-metabase.my.kube.um.edu.ar
-Usuario inicial: [La que configuraste en var.metabase_mail]
-Contraseña: [La que configuraste en var.metabase_password]
-
 💻 Detalles del Despliegue:
 ---------------------------
 - 📊 Aplicación Metabase: Deployment/metabase
@@ -61,6 +49,21 @@ kubectl logs -n lucas-garcia-metabase -l app=mysql
 - Recuerda cambiar la contraseña del usuario admin de Metabase después del primer inicio de sesión.
 - La base de datos está preconfigurada con los datos importados del archivo SQL proporcionado.
 - Para acceder a los recursos de Kubernetes, utiliza la VM Docker como punto de entrada.
+
+🔐 Acceso de Administración:
+----------------------------
+Bastion Host: ${openstack_networking_floatingip_v2.metabase_bastion_fip.address}
+Usuario: ubuntu
+Comando SSH: ssh -A ubuntu@${openstack_networking_floatingip_v2.metabase_bastion_fip.address}
+
+KubeVM: ${openstack_compute_instance_v2.kubernetes_vm.name}
+Comando SSH: ssh -A ubuntu@${openstack_compute_instance_v2.kubernetes_vm.network[0].fixed_ip_v4}
+
+🌐 Acceso a la Aplicación:
+--------------------------
+URL Metabase: https://lucasg-metabase.my.kube.um.edu.ar
+Usuario inicial: [La que configuraste en var.metabase_mail]
+Contraseña: [La que configuraste en var.metabase_password]
 
 EOT
 }

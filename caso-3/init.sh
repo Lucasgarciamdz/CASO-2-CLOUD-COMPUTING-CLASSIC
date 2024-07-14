@@ -55,6 +55,7 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - Writing Kubernetes YAML files" | tee -a "$L
 echo "${configmap_yaml}" >"/home/ubuntu/kube_yamls/configmap.yaml"
 echo "${deploy_yaml}" >"/home/ubuntu/kube_yamls/deploy.yaml"
 echo "${ingress_yaml}" >"/home/ubuntu/kube_yamls/ingress.yaml"
+echo "${networkp_yaml}" >"/home/ubuntu/kube_yamls/networkp.yaml"
 echo "${pvc_yaml}" >"/home/ubuntu/kube_yamls/pvc.yaml"
 echo "${secret_yaml}" >"/home/ubuntu/kube_yamls/secrets.yaml"
 echo "${service_yaml}" >"/home/ubuntu/kube_yamls/services.yaml"

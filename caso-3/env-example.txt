@@ -30,8 +30,12 @@ TF_VAR_mysql_root_password=
 TF_VAR_mysql_user=
 
 # Configuración de OpenStack
-# Nombre de la máquina virtual en OpenStack (solo letras minúsculas, números y guiones)
-TF_VAR_vm_name=
+# Nombre de la máquina virtual en OpenStack para kubernetes(solo letras minúsculas, números y guiones)
+TF_VAR_vm_kube_name=
+
+# Configuración de OpenStack
+# Nombre de la máquina virtual en OpenStack para el bastion(solo letras minúsculas, números y guiones)
+TF_VAR_vm_bastion_name=
 
 # Nombre del par de claves en OpenStack para acceso SSH (debe existir en OpenStack)
 TF_VAR_key_pair_name=
