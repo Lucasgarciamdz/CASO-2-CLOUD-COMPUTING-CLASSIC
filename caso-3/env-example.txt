@@ -55,10 +55,11 @@ TF_VAR_project_name=
 TF_VAR_mobility_db_name=
 
 # URL del archivo SQL con datos de movilidad de Google (debe ser una URL válida y accesible)
-TF_VAR_sql_file_url=
+TF_VAR_sql_file_url=https://drive.google.com/uc?export=download&id=1AC2uvs6f2t4qrhXpz5XowSxoVXR3TfvG
 
 # Nombre de la máquina virtual en OpenStack (solo letras minúsculas, números y guiones)
 TF_VAR_vm_name=
 
 # Nombre del par de claves en OpenStack para acceso SSH (debe existir en OpenStack)
 TF_VAR_key_pair_name=
+

@@ -3,11 +3,12 @@
 LOG_FILE="/var/log/init_script.log"
 
 log_and_run() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S') - Running: $*" | tee -a "$LOG_FILE"
-  if ! eval "$@" >>"$LOG_FILE" 2>&1; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Command failed: $*" | tee -a "$LOG_FILE"
-    return 1
-  fi
+  # echo "$(date '+%Y-%m-%d %H:%M:%S') - Running: $*" | tee -a "$LOG_FILE"
+  "$@"
+  # if ! "$@" >>"$LOG_FILE" 2>&1; then
+  #   echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Command failed: $*" | tee -a "$LOG_FILE"
+  #   return 1
+  # fi
 }
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting init.sh" | tee -a "$LOG_FILE"

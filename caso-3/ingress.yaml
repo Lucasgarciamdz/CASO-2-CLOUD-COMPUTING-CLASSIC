@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
 spec:
   rules:
-    - host: lucasg-metabase.my.kube.um.edu.ar
+    - host: ${URL_NAME}.my.kube.um.edu.ar
       http:
         paths:
           - path: /

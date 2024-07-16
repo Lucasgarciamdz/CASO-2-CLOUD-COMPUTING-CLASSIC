@@ -36,6 +36,7 @@ resource "openstack_compute_instance_v2" "kubernetes_vm" {
     }),
     ingress_yaml = templatefile("${path.module}/ingress.yaml",{
       NAMESPACE = var.namespace
+      URL_NAME = var.ingress_url_name
     }),
     namespace_yaml = templatefile("${path.module}/namespace.yaml",{
       NAMESPACE = var.namespace
