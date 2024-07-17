@@ -28,7 +28,7 @@ output "Detalle" {
 
 📊 Dashboard:
 -------------
-URL del Dashboard: https://lucasg-metabase.my.kube.um.edu.ar/dashboard/1
+URL del Dashboard: https://${var.ingress_url_name}.my.kube.um.edu.ar/dashboard/1
 
 🔍 Comandos Útiles:
 -------------------
@@ -61,7 +61,7 @@ Comando SSH: ssh -A ubuntu@${openstack_compute_instance_v2.kubernetes_vm.network
 
 🌐 Acceso a la Aplicación:
 --------------------------
-URL Metabase: https://lucasg-metabase.my.kube.um.edu.ar
+URL Metabase: https://${var.ingress_url_name}.my.kube.um.edu.ar
 Usuario inicial: [La que configuraste en var.metabase_mail]
 Contraseña: [La que configuraste en var.metabase_password]
 

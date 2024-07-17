@@ -95,7 +95,7 @@ spec:
           ports:
             - containerPort: 3306
           volumeMounts:
-            - name: mysql-persistent-storage
+            - name: mysql-persistent-storage3
               mountPath: /var/lib/mysql
           readinessProbe:
             exec:
@@ -106,7 +106,7 @@ spec:
           args:
             - --mysql-native-password=ON
       volumes:
-        - name: mysql-persistent-storage
+        - name: mysql-persistent-storage3
           persistentVolumeClaim:
             claimName: mysql-pv-claim
       terminationGracePeriodSeconds: 30

@@ -1,15 +1,19 @@
 #!/bin/bash
 
 LOG_FILE="/var/log/init_script.log"
+LOGGING_ENABLED=true
 
 log_and_run() {
-  # echo "$(date '+%Y-%m-%d %H:%M:%S') - Running: $*" | tee -a "$LOG_FILE"
-  "$@"
-  # if ! "$@" >>"$LOG_FILE" 2>&1; then
-  #   echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Command failed: $*" | tee -a "$LOG_FILE"
-  #   return 1
-  # fi
-}
+   if [ "$LOGGING_ENABLED" = true ]; then
+     echo "$(date '+%Y-%m-%d %H:%M:%S') - Running: $*" | tee -a "$LOG_FILE"
+   fi
+   if ! eval "$@" >>"$LOG_FILE" 2>&1; then
+     if [ "$LOGGING_ENABLED" = true ]; then
+       echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Command failed: $*" | tee -a "$LOG_FILE"
+     fi
+     return 1
+   fi
+ }
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting init.sh" | tee -a "$LOG_FILE"
 
@@ -86,17 +90,32 @@ while ! kubectl get po -l app=mysql -n ${namespace} | grep -q '1/1'; do
 done
 echo "$(date '+%Y-%m-%d %H:%M:%S') - MySQL pod is ready" | tee -a "$LOG_FILE"
 
-# Download SQL file
+#* Download SQL file*
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Downloading SQL file" | tee -a "$LOG_FILE"
 wget --no-check-certificate -O /tmp/google-mobility.sql '${sql_file_url}'
 
-# Get MySQL pod name
+#* Get MySQL pod name*
 MYSQL_POD=$(kubectl get pods -l app=mysql -n ${namespace} -o jsonpath="{.items[0].metadata.name}")
 
-# Copy SQL file to MySQL pod
+#* Copy SQL file to MySQL pod*
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Copying SQL file to MySQL pod" | tee -a "$LOG_FILE"
-log_and_run "kubectl cp /tmp/google-mobility.sql '${namespace}'/$MYSQL_POD:/tmp/google-mobility.sql"
+log_and_run "kubectl cp /tmp/google-mobility.sql ${namespace}/$MYSQL_POD:/tmp/google-mobility.sql"
 
+#* Execute SQL script*
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
+log_and_run "kubectl exec -i $MYSQL_POD -n ${namespace} -- mysql -u root -p'c295IHJvb3QgYXNpIHF1ZSBoYWdvIGxvIHF1ZSBxdWllcmE=' <<EOF
+CREATE DATABASE IF NOT EXISTS googleDB;
+CREATE DATABASE IF NOT EXISTS metabaseDB;
+CREATE USER IF NOT EXISTS 'metabaseDbUser'@'%' IDENTIFIED WITH mysql_native_password BY 'Y3VhbmRvIHNlYSBncmFuZGUgcXVpZXJvIHNlciBjb21vIGthcms=';
+CREATE USER IF NOT EXISTS 'mobilityDbUser'@'%' IDENTIFIED WITH mysql_native_password BY 'eWEgbm8gc2UgcXVlIGNvbnRyYXNlw7FhIHBvbmVy';
+GRANT ALL PRIVILEGES ON metabaseDB.* TO 'metabaseDbUser'@'%';
+GRANT ALL PRIVILEGES ON googleDB.* TO 'mobilityDbUser'@'%';
+FLUSH PRIVILEGES;
+USE googleDB;
+source /tmp/google-mobility.sql;
+EOF"
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') - SQL file copy completed" | tee -a "$LOG_FILE"
 # Execute SQL script
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Executing SQL script" | tee -a "$LOG_FILE"
 log_and_run "kubectl exec -i '$MYSQL_POD' -n '${namespace}' -- mysql -u root -p'${MYSQL_ROOT_PASSWORD}' <<EOF

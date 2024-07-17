@@ -88,3 +88,8 @@ variable "vm_bastion_name" {
   description = "Name of the Bastion VM"
   type        = string
 }
+
+variable "ingress_url_name" {
+  description = "Name of the Bastion VM"
+  type        = string
+}
