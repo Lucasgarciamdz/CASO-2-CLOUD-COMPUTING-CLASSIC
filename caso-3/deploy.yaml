@@ -59,11 +59,12 @@ spec:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
   namespace: ${NAMESPACE}
 spec:
+  serviceName: 'mysql'
   replicas: 1
   selector:
     matchLabels:
@@ -95,7 +96,7 @@ spec:
           ports:
             - containerPort: 3306
           volumeMounts:
-            - name: mysql-persistent-storage3
+            - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
           readinessProbe:
             exec:
@@ -105,8 +106,12 @@ spec:
             timeoutSeconds: 5
           args:
             - --mysql-native-password=ON
-      volumes:
-        - name: mysql-persistent-storage3
-          persistentVolumeClaim:
-            claimName: mysql-pv-claim
       terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 1Gi
